@@ -8,7 +8,7 @@ using System.Windows;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("Umlaut")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Quick and easy way to paste german umlauts. Just click Ctrl + Shift + A and select the umlaut.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Umlaut")]

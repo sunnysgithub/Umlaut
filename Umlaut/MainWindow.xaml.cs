@@ -14,9 +14,13 @@ namespace Umlaut
         private HotKey _hotKey;
         private NotifyIcon _systemTrayIcon;
 
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Hide();
 
             Stream icoStream = GetType().Assembly.GetManifestResourceStream("Umlaut.Resources.umlaut.ico");
             BitmapDecoder decoder = IconBitmapDecoder.Create(icoStream, BitmapCreateOptions.None, BitmapCacheOption.None);
@@ -110,16 +114,6 @@ namespace Umlaut
             }
             Hide();
             System.Windows.Forms.SendKeys.SendWait("^v");
-        }
-
-        private void CancelCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Hide();
-        }
-
-        private void CancelCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
         }
     }
 

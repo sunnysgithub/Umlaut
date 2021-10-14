@@ -1,4 +1,5 @@
 ﻿<Window x:Class="Umlaut.MainWindow"
+        DataContext="{StaticResource MainViewModel}"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,6 +17,9 @@
         AllowsTransparency="True" 
         WindowStyle="None" 
         FontSize="20">
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding CancelCommand}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />

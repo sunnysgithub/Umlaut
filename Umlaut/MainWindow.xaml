@@ -1,5 +1,4 @@
 ﻿<Window x:Class="Umlaut.MainWindow"
-        DataContext="{StaticResource MainViewModel}"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,27 +16,7 @@
         AllowsTransparency="True" 
         WindowStyle="None" 
         FontSize="20">
-    <Window.InputBindings>
-        <KeyBinding Key="Esc" Command="{Binding CancelCommand}" />
-    </Window.InputBindings>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Click="OnÄClicked">Ä</Button>
-        <Button Grid.Column="1" Click="OnäClicked">ä</Button>
-        <Button Grid.Column="2" Click="OnÖClicked">Ö</Button>
-        <Button Grid.Column="3" Click="OnöClicked">ö</Button>
-        <Button Grid.Column="4" Click="OnÜClicked">Ü</Button>
-        <Button Grid.Column="5" Click="OnüClicked">ü</Button>
-        <Button Grid.Column="6" Click="OnßClicked">ß</Button>
-        <Button Grid.Column="7" Click="OnExitClicked">x</Button>
+        <Label Name="tlabel" FontSize="10"/>
     </Grid>
 </Window>

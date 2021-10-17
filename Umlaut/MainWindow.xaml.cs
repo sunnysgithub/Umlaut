@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using InputSimulator = WindowsInput.InputSimulator;
 using MenuItem = System.Windows.Forms.MenuItem;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
 
@@ -22,6 +22,8 @@ namespace Umlaut
 
         private MenuItem _pauseMenuItem;
         private MenuItem _exitMenuItem;
+
+        private InputSimulator _inputSimulator;
 
         public MainWindow()
         {
@@ -62,6 +64,7 @@ namespace Umlaut
             HotKey hotKeyü = new HotKey(Key.U, KeyModifier.AltGr, OnüKeyHandler);
             HotKey hotKeyß = new HotKey(Key.S, KeyModifier.AltGr, OnßKeyHandler);
 
+            _inputSimulator = new InputSimulator();
             _inPauseState = false;            
         }
 
@@ -72,15 +75,11 @@ namespace Umlaut
         private void OnÜKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.Ü);
         private void OnüKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ü);
         private void OnßKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ß);
-        private void SetUmlaut(string umlaut)
+        private void SetUmlaut(char umlaut)
         {
             if (_inPauseState) return;
 
-            _inPauseState = true;
-            Clipboard.SetText(umlaut);
-            Thread.Sleep(500);
-            System.Windows.Forms.SendKeys.SendWait("^v");
-            _inPauseState = false;
+            _inputSimulator.Keyboard.TextEntry(umlaut);
         }
 
         private void OpenMenuItemClicked(object sender, EventArgs e) =>  Show();

@@ -5,18 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Umlaut"
         mc:Ignorable="d"
-        Title="Umlaut" 
-        Height="48" 
-        Width="300" 
-        WindowStartupLocation="CenterScreen" 
+        Height="0" 
         ShowInTaskbar="False" 
-        Topmost="True" 
-        FontFamily="Bahnschrift" 
-        Opacity="0.8" 
-        AllowsTransparency="True" 
-        WindowStyle="None" 
-        FontSize="20">
+        Title="Umlaut" 
+        Visibility="Hidden"
+        Width="0"
+        >
     <Grid>
-        <Label Name="tlabel" FontSize="10"/>
     </Grid>
 </Window>

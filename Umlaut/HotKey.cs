@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Interop;
-
 
 namespace Umlaut
 {
@@ -18,16 +16,19 @@ namespace Umlaut
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        public const int WmHotKey = 0x0312;
+        private const int WmHotKey = 0x0312;
 
         private bool _disposed = false;
 
         public Key Key { get; private set; }
+        
         public KeyModifier KeyModifiers { get; private set; }
-        public Action<HotKey> Action { get; private set; }
+        
+        public Action Action { get; private set; }
+        
         public int Id { get; set; }
 
-        public HotKey(Key k, KeyModifier keyModifiers, Action<HotKey> action, bool register = true)
+        public HotKey(Key k, KeyModifier keyModifiers, Action action, bool register = true)
         {
             Key = k;
             KeyModifiers = keyModifiers;
@@ -52,7 +53,6 @@ namespace Umlaut
 
             _dictHotKeyToCalBackProc.Add(Id, this);
 
-            Debug.Print(result.ToString() + ", " + Id + ", " + virtualKeyCode);
             return result;
         }
 
@@ -77,7 +77,7 @@ namespace Umlaut
                     {
                         if (hotKey.Action != null)
                         {
-                            hotKey.Action.Invoke(hotKey);
+                            hotKey.Action.Invoke();
                         }
                         handled = true;
                     }

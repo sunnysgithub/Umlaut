@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -25,9 +26,20 @@ namespace Umlaut
 
         private InputSimulator _inputSimulator;
 
+        private IEnumerable<HotKey> _hotkeys;
+
         public MainWindow()
         {
-            Hide();
+            _hotkeys = new List<HotKey>()
+            {
+                new HotKey(Key.A, KeyModifier.AltGr | KeyModifier.Shift, () => SetUmlaut(Umlaute.Ä)),
+                new HotKey(Key.A, KeyModifier.AltGr, () => SetUmlaut(Umlaute.ä)),
+                new HotKey(Key.O, KeyModifier.AltGr | KeyModifier.Shift, () => SetUmlaut(Umlaute.Ö)),
+                new HotKey(Key.O, KeyModifier.AltGr, () => SetUmlaut(Umlaute.ö)),
+                new HotKey(Key.U, KeyModifier.AltGr | KeyModifier.Shift, () => SetUmlaut(Umlaute.Ü)),
+                new HotKey(Key.U, KeyModifier.AltGr, () => SetUmlaut(Umlaute.ü)),
+                new HotKey(Key.S, KeyModifier.AltGr, () => SetUmlaut(Umlaute.ß))
+            };
 
             Stream onIcoStream = GetType().Assembly.GetManifestResourceStream("Umlaut.Resources.umlauton.ico");
 
@@ -39,7 +51,6 @@ namespace Umlaut
             _systemTrayIcon = new NotifyIcon();
             _systemTrayIcon.Icon = new Icon(onIcoStream);
             _systemTrayIcon.Visible = true;
-            //_systemTrayIcon.DoubleClick += OpenMenuItemClicked;
 
             _pauseMenuItemEventHandler += PauseMenuItemClicked;
             _exitMenuItemEventHandler += ExitMenuItemClicked;
@@ -56,33 +67,16 @@ namespace Umlaut
 
             InitializeComponent();
 
-            HotKey hotKeyÄ = new HotKey(Key.A, KeyModifier.AltGr | KeyModifier.Shift, OnÄKeyHandler);
-            HotKey hotKeyä = new HotKey(Key.A, KeyModifier.AltGr, OnäKeyHandler);
-            HotKey hotKeyÖ = new HotKey(Key.O, KeyModifier.AltGr | KeyModifier.Shift, OnÖKeyHandler);
-            HotKey hotKeyö = new HotKey(Key.O, KeyModifier.AltGr, OnöKeyHandler);
-            HotKey hotKeyÜ = new HotKey(Key.U, KeyModifier.AltGr | KeyModifier.Shift, OnÜKeyHandler);
-            HotKey hotKeyü = new HotKey(Key.U, KeyModifier.AltGr, OnüKeyHandler);
-            HotKey hotKeyß = new HotKey(Key.S, KeyModifier.AltGr, OnßKeyHandler);
-
             _inputSimulator = new InputSimulator();
             _inPauseState = false;            
         }
 
-        private void OnÄKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.Ä);
-        private void OnäKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ä);
-        private void OnÖKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.Ö);
-        private void OnöKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ö);
-        private void OnÜKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.Ü);
-        private void OnüKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ü);
-        private void OnßKeyHandler(HotKey hotKey) => SetUmlaut(Umlaute.ß);
         private void SetUmlaut(char umlaut)
         {
             if (_inPauseState) return;
 
             _inputSimulator.Keyboard.TextEntry(umlaut);
         }
-
-        private void OpenMenuItemClicked(object sender, EventArgs e) =>  Show();
 
         private void PauseMenuItemClicked(object sender, EventArgs e) => TogglePause();
 
@@ -101,6 +95,11 @@ namespace Umlaut
 
         private void Exit()
         {
+            foreach(HotKey hotkey in _hotkeys)
+            {
+                hotkey.Unregister();
+            }
+
             _systemTrayIcon.Visible = false;
             Application.Current.Shutdown();
         }

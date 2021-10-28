@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ContextMenu = System.Windows.Forms.ContextMenu;
-using InputSimulator = WindowsInput.InputSimulator;
 using MenuItem = System.Windows.Forms.MenuItem;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
 
@@ -23,8 +22,6 @@ namespace Umlaut
 
         private MenuItem _pauseMenuItem;
         private MenuItem _exitMenuItem;
-
-        private InputSimulator _inputSimulator;
 
         private IEnumerable<HotKey> _hotkeys;
 
@@ -67,7 +64,6 @@ namespace Umlaut
 
             InitializeComponent();
 
-            _inputSimulator = new InputSimulator();
             _inPauseState = false;            
         }
 
@@ -75,7 +71,7 @@ namespace Umlaut
         {
             if (_inPauseState) return;
 
-            _inputSimulator.Keyboard.TextEntry(umlaut);
+            InputSimulator.SendInput(umlaut);
         }
 
         private void PauseMenuItemClicked(object sender, EventArgs e) => TogglePause();
@@ -103,5 +99,5 @@ namespace Umlaut
             _systemTrayIcon.Visible = false;
             Application.Current.Shutdown();
         }
-    }
+    }    
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -13,13 +15,19 @@ namespace Umlaut
 {
     public partial class MainWindow : Window
     {
+        private const string REGISTRY_PATH = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+        private const string REGISTRY_KEY = "Umlaut";
+
         private NotifyIcon _systemTrayIcon;
 
+        private event EventHandler _autostartMenuItemEventHandler;
         private event EventHandler _pauseMenuItemEventHandler;
         private event EventHandler _exitMenuItemEventHandler;
 
+        private bool _isAutostartActivated;
         private bool _inPauseState;
 
+        private MenuItem _autostartMenuItem;
         private MenuItem _pauseMenuItem;
         private MenuItem _exitMenuItem;
 
@@ -27,6 +35,8 @@ namespace Umlaut
 
         public MainWindow()
         {
+            _isAutostartActivated = IsAutostartActivated();
+
             _hotkeys = new List<HotKey>()
             {
                 new HotKey(Key.A, KeyModifier.AltGr | KeyModifier.Shift, () => SetUmlaut(Umlaute.Ä)),
@@ -49,14 +59,17 @@ namespace Umlaut
             _systemTrayIcon.Icon = new Icon(onIcoStream);
             _systemTrayIcon.Visible = true;
 
+            _autostartMenuItemEventHandler += AutostartMenuItemClicked;
             _pauseMenuItemEventHandler += PauseMenuItemClicked;
             _exitMenuItemEventHandler += ExitMenuItemClicked;
 
             // Initialize menu items
+            _autostartMenuItem = new MenuItem(_isAutostartActivated ? "Deactivate Autostart" : "Activate Autostart", _autostartMenuItemEventHandler);
             _pauseMenuItem = new MenuItem("Pause", _pauseMenuItemEventHandler);
             _exitMenuItem = new MenuItem("Exit", _exitMenuItemEventHandler);
 
             ContextMenu contextMenu = new ContextMenu();
+            contextMenu.MenuItems.Add(_autostartMenuItem);
             contextMenu.MenuItems.Add(_pauseMenuItem);
             contextMenu.MenuItems.Add(_exitMenuItem);
 
@@ -74,6 +87,8 @@ namespace Umlaut
             InputSimulator.SendInput(umlaut);
         }
 
+        private void AutostartMenuItemClicked(object sender, EventArgs e) => ToggleAutostart();
+
         private void PauseMenuItemClicked(object sender, EventArgs e) => TogglePause();
 
         private void ExitMenuItemClicked(object sender, EventArgs e) => Exit();
@@ -87,6 +102,62 @@ namespace Umlaut
                 );
 
             _pauseMenuItem.Text = _inPauseState ? "Run" : "Pause";
+        }
+
+        private void ToggleAutostart()
+        {
+            if(_isAutostartActivated)
+            {
+                RemoveUmlautFromStartup();
+            }
+            else
+            {
+                LaunchUmlautAtStartup();
+            }
+        }
+
+        private bool IsAutostartActivated()
+        {
+            try
+            {
+                RegistryKey regKey = Registry.CurrentUser.OpenSubKey(REGISTRY_PATH);
+                return regKey.GetValueNames().Contains(REGISTRY_KEY);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
+        private void LaunchUmlautAtStartup()
+        {
+            try
+            {
+                string appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(REGISTRY_PATH, true))
+                {
+                    if (regKey is null) return;
+                    regKey.SetValue(REGISTRY_KEY, Path.Combine(appPath, "Umlaut.exe"));
+                    _autostartMenuItem.Text = "Deactivate Autostart";
+                    _isAutostartActivated = true;
+                }
+            }
+            catch(Exception) {}
+        }
+
+        private void RemoveUmlautFromStartup()
+        {
+            try
+            {
+                using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(REGISTRY_PATH, true))
+                {
+                    if (regKey is null) return;
+                    regKey.DeleteValue(REGISTRY_KEY);
+                    _autostartMenuItem.Text = "Activate Autostart";
+                    _isAutostartActivated = false;
+                }
+            }
+            catch (Exception) { }
         }
 
         private void Exit()

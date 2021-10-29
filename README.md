@@ -15,4 +15,12 @@ You need | You press
 Ü | AltGr + Shift + u
 ß | AltGr + s
 
+## Settings
+
+Right click icon in the system tray to open context menu
+
+- **Activate / Deactivate Autostart**: Launches Umlaut at login (or removes it from autostart)
+- **Pause**: Pauses the conversion
+- **Exit**: Quits Umlaut
+
 [Go to Download](https://github.com/sunnysgithub/Umlaut/releases)

@@ -15,6 +15,11 @@ You need | You press
 Ü | AltGr + Shift + u
 ß | AltGr + s
 
+## Screenshot
+
+![Umlaut Screenshot](https://github.com/sunnysgithub/Umlaut/blob/master/Screenshots/screenshot.png?raw=true)
+Runs in the background
+
 ## Settings
 
 Right click icon in the system tray to open context menu

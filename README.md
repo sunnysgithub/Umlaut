@@ -1,3 +1,5 @@
+<img src="https://github.com/sunnysgithub/Umlaut/blob/master/Screenshots/umlaut.png?raw=true.png" align="right" />
+
 # Umlaut
 
 German umlauts on non-German keyboards are often troublesome. 
